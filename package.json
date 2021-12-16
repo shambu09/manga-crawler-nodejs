@@ -10,8 +10,11 @@
   "author": "shambu09",
   "license": "ISC",
   "dependencies": {
+    "@googleapis/drive": "^2.1.0",
     "axios": "^0.24.0",
     "cheerio": "^1.0.0-rc.10",
+    "dotenv": "^10.0.0",
+    "googleapis": "^92.0.0",
     "mongodb": "^4.2.2"
   }
 }
