@@ -1,0 +1,17 @@
+{
+  "name": "manga-crawler-js",
+  "version": "1.0.0",
+  "description": "Javascript port of Manga-Crawler",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests.js",
+    "run": "node index.js"
+  },
+  "author": "shambu09",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cheerio": "^1.0.0-rc.10",
+    "mongodb": "^4.2.2"
+  }
+}
