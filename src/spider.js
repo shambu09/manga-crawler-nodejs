@@ -1,10 +1,8 @@
-require("dotenv").config();
-const fs = require("fs");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const {put_manga, update_index} = require("../db.js");
+const {put_manga, update_index} = require("./db.js");
 
-const { asyncLimit, delay } = require("../utils.js");
+const { asyncLimit} = require("./utils.js");
 var global = {
 	drive: null,
 };
@@ -18,7 +16,7 @@ async function _fetch_resp(req) {
 	}
 	return resp.data;
 }
-const fetch_resp = asyncLimit(_fetch_resp, 20);
+const fetch_resp = asyncLimit(_fetch_resp, 25);
 
 async function fetch_images_urls(title, url) {
 	const resp = await fetch_resp(url);
@@ -104,34 +102,32 @@ async function download_all_images(title, chapters) {
 
 		const chapter_meta = await download_images(title, chapter, i + 1);
 		chapter_metas.push(chapter_meta);
-
-		console.log(`Downloaded ${chapter.title}`);
+		
+		global.drive.refresh_token();
+		console.log(`Downloaded ${chapter.title}\n`);
 	}
 	return chapter_metas;
 }
 
-async function _main(start, end) {
-	const drive = await require("../gdrive.js");
+async function crawl(url, start, end, type="manga") {
+	const drive = await require("./gdrive.js");
 	global.drive = drive;
 	const METADATA_JSON = process.env.METADATA_JSON;
 
-	const url = "https://readmanganato.com/manga-oc955385";
 	let { title, chapters } = await extract_index(url);
 
-	const _title = `${title} (${start} - ${end})`;
+	const _title = `${title} (${start} - ${end-1})`;
 	drive.PARENT_FOLDER_ID = await drive.createFolder(
 		_title,
 		drive.PARENT_FOLDER_ID
 	);
-
-	global.drive.put
 
 	chapters = chapters.reverse().slice(start, end);
 	let chapter_metas = await download_all_images(title, chapters);
 	chapter_metas = {
 		title: _title,
 		num_chapters: chapter_metas.length,
-		type: "manga",
+		type,
 		chapters: chapter_metas,
 	}
 	//JSON.Stringify with Indentation
@@ -147,6 +143,9 @@ async function _main(start, end) {
 	idx_ele[file_id]= _title;
 
 	update_index(idx_ele);
+	console.log(`Downloaded ${title}`);
 }
 
-_main((start = 0), (end = 1));
+module.exports = {
+	crawl,
+}

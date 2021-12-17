@@ -2,7 +2,7 @@ const { assert } = require("console");
 const { google } = require("googleapis");
 const { asyncLimit, delay } = require("./utils.js");
 
-const LIMIT = 20;
+const LIMIT = 25;
 
 class GoogleDrive {
 	constructor() {
@@ -10,7 +10,7 @@ class GoogleDrive {
 		this.SCOPE = ["https://www.googleapis.com/auth/drive"];
 		this.CREDS_PATH = "./credentials.json";
 		this.TIME = null;
-		this.REFRESH_TIME = 2100;
+		this.REFRESH_TIME = 35 * 60 * 1000; // 35 mins in milliseconds = 35 * 60 * 1000
 		this.drive = null;
 	}
 
@@ -31,7 +31,7 @@ class GoogleDrive {
 			auth: client,
 		});
 
-		this.drive;
+		return this.drive;
 	}
 
 	async init(PARENT_FOLDER_ID, CREDS_PATH = "./credentials.json") {
@@ -119,11 +119,20 @@ class GoogleDrive {
 			fileId: file_id,
 			media: {
 				mimeType: "application/json",
-				body: JSON.stringify(data),
+				body: JSON.stringify(data, null, 6),
 			},
 			fields: "id",
 		});
 		return file.data.id;
+	}
+
+	async refresh_token() {
+		// Refresh token every 35 mins
+		if (Date.now() - this.TIME > this.REFRESH_TIME) {
+			await this.getDrive();
+			this.TIME = Date.now();
+			console.log("Refreshed drive auth token");
+		}
 	}
 
 	get_public_url_file(file_id) {
