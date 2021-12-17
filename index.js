@@ -1,4 +1,3 @@
-require("dotenv").config();
-const { crawl } = require("./src/spider.js");
+const { crawl } = require("./crawler");
 
-crawl("https://readmanganato.com/manga-ax951880", 0, 101, "manhua");
+// crawl("https://readmanganato.com/manga-ax951880", 101, 111, "manhua");

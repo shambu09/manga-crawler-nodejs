@@ -1,3 +1,4 @@
+const assert = require("assert").strict;
 const axios = require("axios");
 const cheerio = require("cheerio");
 const {put_manga, update_index} = require("./db.js");
@@ -110,6 +111,9 @@ async function download_all_images(title, chapters) {
 }
 
 async function crawl(url, start, end, type="manga") {
+	assert(process.env.METADATA_JSON, "METADATA_JSON is not set");
+	assert(process.env.DATA_FOLDER_ID, "DATA_FOLDER_ID is not set");
+	
 	const drive = await require("./gdrive.js");
 	global.drive = drive;
 	const METADATA_JSON = process.env.METADATA_JSON;
@@ -143,7 +147,7 @@ async function crawl(url, start, end, type="manga") {
 	idx_ele[file_id]= _title;
 
 	update_index(idx_ele);
-	console.log(`Downloaded ${title}`);
+	console.log(`Downloaded ${_title}`);
 }
 
 module.exports = {

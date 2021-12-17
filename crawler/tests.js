@@ -1,4 +1,4 @@
-const { assert } = require("console");
+const assert = require("assert").strict;
 require("dotenv").config();
 
 //------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ async function donwload_image() {
 async function main() {
 	// test_delay();
 	// test_drive();
-	donwload_image();
+	// donwload_image();
 }
 
 main();
