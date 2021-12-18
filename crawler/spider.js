@@ -110,7 +110,7 @@ async function download_all_images(title, chapters) {
 	return chapter_metas;
 }
 
-async function crawl(url, start, end, type="manga") {
+async function crawl(url, start=0, end=-1, type="manga") {
 	assert(process.env.METADATA_JSON, "METADATA_JSON is not set");
 	assert(process.env.DATA_FOLDER_ID, "DATA_FOLDER_ID is not set");
 	
