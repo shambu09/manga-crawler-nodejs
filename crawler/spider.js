@@ -121,14 +121,33 @@ async function crawl(url, start=0, end=-1, type="manga") {
 	global.drive = drive;
 
 	let { title, chapters } = await extract_index(url);
+	
+	if(start < 0){
+		start = chapters.length + start;
+	}
+	
+	if(end < 0){
+		end = chapters.length + end;
+	}
+	end += 1
 
-	const _title = `${title} (${start} - ${end-1})`;
+	if(start > end){
+		return;
+	}
+
+	chapters = chapters.reverse().slice(start, end);
+
+	if (chapters.length === 0){
+		return;
+	}
+
+	const _title = `${title} (${start} - ${end})`;
+
 	drive.PARENT_FOLDER_ID = await drive.createFolder(
 		_title,
 		drive.PARENT_FOLDER_ID
 	);
 
-	chapters = chapters.reverse().slice(start, end);
 	let chapter_metas = await download_all_images(title, chapters);
 	chapter_metas = {
 		title: _title,
@@ -136,6 +155,7 @@ async function crawl(url, start=0, end=-1, type="manga") {
 		type,
 		chapters: chapter_metas,
 	}
+	
 	//JSON.Stringify with Indentation
 	const file_id = await global.drive.uploadFile("metadata.json", drive.PARENT_FOLDER_ID, JSON.stringify(chapter_metas, null, 6), "application/json");
 	const index = await global.drive.downloadJson(METADATA_JSON);
