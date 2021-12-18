@@ -1,7 +1,9 @@
+require("dotenv").config();
 const express = require("express");
+const { crawl } = require("./crawler");
+
 const app = express();
 const port = process.env.PORT || 5000;
-const { crawl } = require("./crawler");
 
 // crawl("https://readmanganato.com/manga-ax951880", 101, 111, "manhua");
 
