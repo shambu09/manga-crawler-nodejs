@@ -115,8 +115,10 @@ async function crawl(url, start=0, end=-1, type="manga") {
 	assert(process.env.DATA_FOLDER_ID, "DATA_FOLDER_ID is not set");
 	
 	const drive = await require("./gdrive.js");
-	global.drive = drive;
 	const METADATA_JSON = process.env.METADATA_JSON;
+	drive.PARENT_FOLDER_ID = process.env.DATA_FOLDER_ID;
+	drive.refresh_token();
+	global.drive = drive;
 
 	let { title, chapters } = await extract_index(url);
 
