@@ -2,7 +2,7 @@ const { assert } = require("console");
 const { google } = require("googleapis");
 const { asyncLimit, delay } = require("./utils.js");
 
-const LIMIT = 25;
+const LIMIT = 20;
 
 class GoogleDrive {
 	constructor() {
