@@ -14,7 +14,7 @@ const asyncLimit = (fn, n, delay_s = 1000) => {
 	const n_fn = async (...args) => {
 		let result = null;
 		await operation.attempt(async () => {
-			result = await fn(args);
+			result = await fn.apply(this, args);
 		});
 		return result;
 	};
