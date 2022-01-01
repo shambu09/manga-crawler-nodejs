@@ -1,8 +1,11 @@
-const asyncLimit = (fn, n) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const asyncLimit = (fn, n, delay_s = 1000) => {
 	let pendingPromises = [];
 	return async function (...args) {
 		while (pendingPromises.length >= n) {
 			await Promise.race(pendingPromises).catch(() => {});
+			await delay(1000);
 		}
 
 		const p = fn.apply(this, args);
@@ -12,6 +15,5 @@ const asyncLimit = (fn, n) => {
 		return p;
 	};
 };
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 module.exports = { asyncLimit, delay };
